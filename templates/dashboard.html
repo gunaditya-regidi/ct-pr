@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinical Trials Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Dashboard for Topic: {{ topic }}</h1>
+        
+        {% if error %}
+            <p>{{ error }}</p>
+        {% else %}
+            <div id="summary-container">
+                <h2>Summary</h2>
+                <p>{{ summary }}</p>
+                <p><strong>Diseases Mentioned:</strong> {{ diseases }}</p>
+                <button id="play-audio" onclick="playAudio()">Play Summary Audio</button>
+                <audio id="audio-player" controls style="display: none;">
+                    <source src="{{ url_for('audio', filename='summary.mp3') }}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </div>
+            
+            <div class="table-container">
+                <h2>Clinical Trials Details</h2>
+                {{ table_html|safe }}
+            </div>
+            
+            <div class="graph-container">
+                <h2>Start Date Distribution</h2>
+<img src="{{ url_for('static', filename='images/start_date_distribution.png') }}" alt="Start Date Distribution">
+
+<h2>Completion Date Distribution</h2>
+<img src="{{ url_for('static', filename='images/completion_date_distribution.png') }}" alt="Completion Date Distribution">
+
+<h2>Study Status Distribution</h2>
+<img src="{{ url_for('static', filename='images/status_distribution.png') }}" alt="Study Status Distribution">
+
+<h2>Cluster Visualization</h2>
+{% if cluster_error %}
+    <p style="color: red;">{{ cluster_error }}</p>
+{% else %}
+    <img src="{{ url_for('static', filename='images/cluster_visualization.png') }}" alt="Cluster Visualization">
+{% endif %}
+
+            </div>
+        {% endif %}
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        function playAudio() {
+            var audio = document.getElementById('audio-player');
+            audio.style.display = 'block'; // Show the audio player
+            audio.play();
+        }
+    </script>
+</body>
+</html>
