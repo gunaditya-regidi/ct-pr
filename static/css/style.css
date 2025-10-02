@@ -64,8 +64,10 @@ body {
 
 .table-container, .cluster-container {
     max-width: 100%;
+    max-height: min-content;
     overflow-x: auto;
     margin-top: 20px;
+    overflow-y: auto;
 }
 
 .table {
@@ -84,7 +86,7 @@ body {
 }
 
 #summary-container {
-    margin-bottom: 20px;
+    margin: 20px;
 }
 
 button {
@@ -96,4 +98,17 @@ button {
 img {
     max-width: 100%;
     height: auto;
+}
+/* Summary Styles */
+.summary {
+    margin-bottom: 20px;
+}
+
+.summary p {
+    white-space: pre-wrap; /* Allows for text wrapping */
+    margin: 0;
+}
+
+.bold {
+    font-weight: bold;
 }

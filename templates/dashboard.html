@@ -14,8 +14,9 @@
             <p>{{ error }}</p>
         {% else %}
             <div id="summary-container">
-                <h2>Summary</h2>
-                <p>{{ summary }}</p>
+                <div class="summary">
+                    <pre>{{ summary|safe }}</pre>
+                </div>
                 <p><strong>Diseases Mentioned:</strong> {{ diseases }}</p>
                 <button id="play-audio" onclick="playAudio()">Play Summary Audio</button>
                 <audio id="audio-player" controls style="display: none;">
