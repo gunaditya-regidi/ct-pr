@@ -1,7 +1,6 @@
 services:
   - type: web
-    name: clinical-trial-app
+    name: your-service-name
     env: python
-    buildCommand: pip install -r requirements.txt
+    buildCommand: pip install --upgrade pip setuptools wheel && pip install -r requirements.txt
     startCommand: python app.py
-    runtime: python
