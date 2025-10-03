@@ -7,3 +7,5 @@ gunicorn==23.0.0
 wordcloud==1.9.3
 networkx==3.1
 transformers
+spacy
+torch
