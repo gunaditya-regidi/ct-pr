@@ -8,3 +8,5 @@ wordcloud==1.9.3
 numpy<2.0.0
 pillow==11.3.0
 networkx==3.1
+spacy
+transformers 
