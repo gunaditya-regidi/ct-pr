@@ -1,56 +1,265 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clinical Trials Dashboard</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        .controls {
+            display: flex;
+            align-items: center;
+        }
+
+        .audio-btn,
+        .back-btn {
+            padding: 10px;
+            margin-right: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .audio-btn:hover,
+        .back-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            padding: 5px 30px 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .search-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        .card {
+            background: linear-gradient(135deg, #fbd604, #fdd302);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: box-shadow 0.3s;
+            color: rgb(0, 0, 0);
+        }
+
+        .card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .card:hover {
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .table-responsive {
+            overflow-x: auto;
+            background-color: white;
+            color: rgb(0, 0, 0);
+            padding: 20px;
+            border-radius: 10px;
+        }
+
+        .graph-container {
+            background-color: white;
+            color: black;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .graph-container img {
+            max-width: 100%;
+            height: auto;
+            margin: 0 auto;
+        }
+
+        .topic-input {
+            width: 80%;
+            padding: 10px;
+            font-size: 18px;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid white;
+            color: white;
+            text-align: center;
+        }
+
+        .topic-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+    </style>
 </head>
+
 <body>
+
     <div class="container">
-        <h1>Dashboard for Topic: {{ topic }}</h1>
-        
-        {% if error %}
-            <p>{{ error }}</p>
-        {% else %}
-            <div id="summary-container">
-                <div class="summary">
-                    <pre>{{ summary|safe }}</pre>
-                </div>
-                <p><strong>Diseases Mentioned:</strong> {{ diseases }}</p>
-                <button id="play-audio" onclick="playAudio()">Play Summary Audio</button>
+        <div class="header">
+            <div class="title">Clinical Trials Dashboard for Topic:</div>
+
+            <div class="controls">
+                <button id="play-audio" class="audio-btn" onclick="playAudio()">🔊 Play Summary Audio</button>
                 <audio id="audio-player" controls style="display: none;">
                     <source src="{{ url_for('audio', filename='summary.mp3') }}" type="audio/mpeg">
                     Your browser does not support the audio element.
                 </audio>
+                <button class="back-btn" onclick="window.history.back()">Back</button>
+                
+                <div class="search-container">
+                <form action="/dashboard" method="POST" class="mb-4">
+                    <div class="mb-3">
+                        <label for="topic" class="form-label">Please Enter a Disease Name :</label>
+                        <input type="text" id="topic" name="topic" class="form-control search-input" required>
+                        <button type="submit" id="search-button">🔍</button>
+                    </div>
+                </form>                
+                </div>  
             </div>
-            
-            <div class="table-container">
-                <h2>Clinical Trials Details</h2>
-                {{ table_html|safe }}
-            </div>
-            
-            <div class="graph-container">
-                <h2>Start Date Distribution</h2>
-<img src="{{ url_for('static', filename='images/start_date_distribution.png') }}" alt="Start Date Distribution">
+        </div>
+        <div class="title">{{topic}}</div>
+        {% if error %}
+        <p style="color: red;">{{ error }}</p>
+        {% else %}
+       
 
-<h2>Completion Date Distribution</h2>
-<img src="{{ url_for('static', filename='images/completion_date_distribution.png') }}" alt="Completion Date Distribution">
+        <div class="card">
+            <h5 class="card-title">Summary</h5>
+            <p class="card-text" style="white-space: pre-wrap;">{{ summary|safe }}</p>
+        </div>
 
-<h2>Study Status Distribution</h2>
-<img src="{{ url_for('static', filename='images/status_distribution.png') }}" alt="Study Status Distribution">
+        <div class="card table-responsive">
+            <h5 class="card-title">Related Trials</h5>
+            <p class="card-text" style="white-space: pre-wrap; color: white;">{{ table_html|safe }}</p>
+        </div>
 
-<h2>Cluster Visualization</h2>
-{% if cluster_error %}
-    <p style="color: red;">{{ cluster_error }}</p>
-{% else %}
-    <img src="{{ url_for('static', filename='images/cluster_visualization.png') }}" alt="Cluster Visualization">
-{% endif %}
+        <div class="card graph-container">
+            <h5 class="card-title">Start Date Distribution</h5>
+            <img src="{{ url_for('static', filename='images/start_date_distribution.png') }}" alt="Start Date Distribution">
+        </div>
 
-            </div>
+        <div class="card graph-container">
+            <h5 class="card-title">Completion Date Distribution</h5>
+            <img src="{{ url_for('static', filename='images/completion_date_distribution.png') }}" alt="Completion Date Distribution">
+        </div>
+
+        <div class="card graph-container">
+            <h5 class="card-title">Study Status Distribution</h5>
+            <img src="{{ url_for('static', filename='images/status_distribution.png') }}" alt="Study Status Distribution">
+        </div>
+
+        <div class="card graph-container">
+            <h5 class="card-title">Network Graph</h5>
+            <img src="{{ url_for('static', filename='images/network_graph.png') }}" alt="Network Graph">
+        </div>
+
+        <div class="card graph-container">
+            <h5 class="card-title">Cluster Visualization</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/cluster_visualization.png') }}" alt="Cluster Visualization">
+            {% endif %}
+        </div>
+
+
+        <div class="card graph-container">
+            <h5 class="card-title">Bar Chart</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/bar_chart.png') }}" alt="Bar Chart">
+            {% endif %}
+        </div>
+       
+        
+        <div class="card graph-container">
+            <h5 class="card-title">Heatmap</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/heatmap.png') }}" alt="HEAT MAP">
+            {% endif %}
+        </div>
+       
+        <div class="card graph-container">
+            <h5 class="card-title">Box Plot</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/box_plot.png') }}" alt="Box Plot">
+            {% endif %}
+        </div>
+        <div class="card graph-container">
+            <h5 class="card-title">Word Cloud</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/word_cloud.png') }}" alt="Word Cloud">
+            {% endif %}
+        </div>
+        <div class="card graph-container">
+            <h5 class="card-title">Tree Map</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/treemap.png') }}" alt="Tree Map">
+            {% endif %}
+        </div>
+        <div class="card graph-container">
+            <h5 class="card-title">Sankey Diagram</h5>
+            {% if cluster_error %}
+            <p style="color: red;">{{ cluster_error }}</p>
+            {% else %}
+            <img src="{{ url_for('static', filename='images/sankey_diagram.png') }}" alt="Sankey Diagram">
+            {% endif %}
+        </div>
+        
+
         {% endif %}
+
     </div>
-    
+
     <script src="{{ url_for('static', filename='js/script.js') }}"></script>
     <script>
         function playAudio() {
@@ -60,4 +269,5 @@
         }
     </script>
 </body>
+
 </html>
