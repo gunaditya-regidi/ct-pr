@@ -6,7 +6,7 @@ services:
     region: oregon
     plan: free
     buildCommand: pip install setuptools wheel && pip install -r requirements.txt
-    startCommand: python app.py
+    startCommand: ./.venv/bin/python app.py
     envVars:
       - key: PYTHON_VERSION
         value: 3.11.9
