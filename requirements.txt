@@ -5,5 +5,5 @@ nltk==3.6.7
 scikit-learn==1.0.2
 transformers==4.17.0
 torch==1.11.0
-setuptools
+setuptools>=42
 wheel
