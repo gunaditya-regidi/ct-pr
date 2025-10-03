@@ -6,3 +6,4 @@ scikit-learn==1.5.2
 gunicorn==23.0.0
 wordcloud==1.9.3
 networkx==3.1
+transformers
